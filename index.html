@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CyberShield AI</title>
+
+<style>
+body {
+    margin:0;
+    font-family: monospace;
+    background: linear-gradient(135deg,#0f051d,#2b0a3d,#1a0033);
+    color:white;
+    text-align:center;
+}
+
+.container {padding:20px; margin-top:40px;}
+
+input {
+    padding:10px;
+    margin:10px;
+    border:none;
+    border-radius:8px;
+    width:80%;
+    background:#1c0128;
+    color:white;
+}
+
+button {
+    padding:10px 15px;
+    border:none;
+    border-radius:8px;
+    background:#a020f0;
+    color:white;
+    cursor:pointer;
+}
+button:hover {background:#c94fff;}
+
+.hidden {display:none;}
+
+.bar {width:80%; height:10px; background:#333; margin:auto; border-radius:10px;}
+.fill {height:100%; width:0%; background:red;}
+
+.terminal {
+    background:black;
+    color:lime;
+    padding:15px;
+    height:150px;
+    overflow:auto;
+    margin-top:20px;
+    font-size:12px;
+}
+
+.game-box {
+    margin-top:20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🕶️ CyberShield AI</h1>
+
+<!-- LOGIN -->
+<div id="loginBox">
+<h2>🔐 Login</h2>
+<input type="text" id="username" placeholder="Username">
+<input type="password" id="passwordLogin" placeholder="Password">
+<button onclick="login()">Login / Register</button>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" class="hidden">
+
+<h2>🔐 Password Checker</h2>
+
+<input type="password" id="password">
+<br>
+<button onclick="togglePassword()">🔓 Show/Hide</button>
+<button onclick="checkPassword()">Check Strength</button>
+
+<div class="bar"><div id="fill" class="fill"></div></div>
+<div id="result"></div>
+
+<h3>🧠 AI Suggestion</h3>
+<button onclick="generatePassword()">Generate Strong Password</button>
+<div id="suggestion"></div>
+
+<h3>🌐 Data Leak Checker</h3>
+<input type="text" id="email" placeholder="Enter Email">
+<button onclick="checkLeak()">Check Leak</button>
+<div id="leakResult"></div>
+
+<h3>🎮 Mini Hacker Game</h3>
+<div class="game-box">
+<p>Guess number (1-10)</p>
+<input type="number" id="guess">
+<button onclick="playGame()">Hack</button>
+<div id="gameResult"></div>
+</div>
+
+<h3>🕶️ Hacker Terminal</h3>
+<div class="terminal" id="terminal"></div>
+<button onclick="runHack()">Run Scan</button>
+
+</div>
+
+</div>
+
+<script>
+
+// LOGIN SYSTEM
+function login(){
+    let user=document.getElementById("username").value;
+    let pass=document.getElementById("passwordLogin").value;
+
+    if(localStorage.getItem(user)==null){
+        localStorage.setItem(user,pass);
+        alert("Registered Successfully!");
+    } else {
+        if(localStorage.getItem(user)==pass){
+            alert("Login Success!");
+            document.getElementById("loginBox").classList.add("hidden");
+            document.getElementById("app").classList.remove("hidden");
+        } else {
+            alert("Wrong Password!");
+        }
+    }
+}
+
+// SHOW HIDE PASSWORD
+function togglePassword(){
+    let p=document.getElementById("password");
+    p.type = p.type==="password" ? "text":"password";
+}
+
+// PASSWORD CHECKER
+function checkPassword(){
+    let p=document.getElementById("password").value;
+    let s=0;
+
+    if(p.length>=8) s++;
+    if(/[A-Z]/.test(p)) s++;
+    if(/[a-z]/.test(p)) s++;
+    if(/[0-9]/.test(p)) s++;
+    if(/[^A-Za-z0-9]/.test(p)) s++;
+
+    let fill=document.getElementById("fill");
+    let res=document.getElementById("result");
+
+    if(s<=2){
+        res.innerHTML="❌ Weak";
+        fill.style.width="30%";
+        fill.style.background="red";
+    } else if(s<=4){
+        res.innerHTML="⚠️ Medium";
+        fill.style.width="70%";
+        fill.style.background="orange";
+    } else {
+        res.innerHTML="✅ Strong";
+        fill.style.width="100%";
+        fill.style.background="lime";
+    }
+}
+
+// AI PASSWORD GENERATOR
+function generatePassword(){
+    let chars="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+    let pass="";
+    for(let i=0;i<12;i++){
+        pass+=chars.charAt(Math.floor(Math.random()*chars.length));
+    }
+    document.getElementById("suggestion").innerHTML=pass;
+}
+
+// FAKE LEAK CHECK
+function checkLeak(){
+    let email=document.getElementById("email").value;
+    let result=document.getElementById("leakResult");
+
+    if(email.includes("123") || email.includes("test")){
+        result.innerHTML="⚠️ Data Found in Breach!";
+        result.style.color="red";
+    } else {
+        result.innerHTML="✅ No Leak Found";
+        result.style.color="lightgreen";
+    }
+}
+
+// GAME
+let secret=Math.floor(Math.random()*10)+1;
+function playGame(){
+    let guess=document.getElementById("guess").value;
+    let res=document.getElementById("gameResult");
+
+    if(guess==secret){
+        res.innerHTML="🎉 Hack Success!";
+    } else {
+        res.innerHTML="❌ Failed!";
+    }
+}
+
+// TERMINAL
+function runHack(){
+    let t=document.getElementById("terminal");
+    let logs=[
+        "Initializing scan...",
+        "Bypassing firewall...",
+        "Injecting payload...",
+        "Accessing database...",
+        "Decrypting passwords...",
+        "Scan Complete ✔️"
+    ];
+
+    t.innerHTML="";
+    let i=0;
+
+    let interval=setInterval(()=>{
+        if(i<logs.length){
+            t.innerHTML+=logs[i]+"<br>";
+            t.scrollTop=t.scrollHeight;
+            i++;
+        } else clearInterval(interval);
+    },500);
+}
+
+</script>
+
+</body>
+</html>
